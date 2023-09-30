@@ -1,0 +1,177 @@
+#include <stddef.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+typedef struct  data
+{
+    int *weight;
+    int *digitsum;
+    int sz;
+} data_t;
+
+void    ft_printdata(data_t *data);
+
+int     ft_listsz(const char *s)
+{
+    int sz;
+
+    sz = 0;
+    while (*s != '\0')
+    {
+        while (*s == ' ')
+            s++;
+        while (*s >= '0' && *s <= '9')
+            s++;
+        if (*s < '0' && *s > '9' && *s != ' ')
+            return (-1);
+        sz++;
+    }
+    return (sz);
+}
+
+void    ft_stoiarray(const char *s, data_t *data)
+{
+    int i;
+    int n;
+
+    data->weight = calloc(data->sz, sizeof(int));
+    i = 0;
+    while (*s != '\0')
+    {
+        while (*s == ' ')
+            s++;
+        n = 0;
+        while (*s >= '0' && *s <= '9')
+        {
+            n = n * 10 + *s - '0';
+            s++;
+        }
+        data->weight[i] = n;
+        i++;
+    }
+}
+
+void    ft_digitsum(data_t *data)
+{
+    int i;
+    int n;
+    int tmp;
+
+    data->digitsum = calloc(data->sz, sizeof(int));
+    i = 0;
+    while (i < data->sz)
+    {
+        n = 0;
+        tmp = data->weight[i];
+        while (tmp > 0)
+        {
+            n += tmp % 10;
+            tmp /= 10;
+        }
+        data->digitsum[i] = n;
+        i++;
+    }
+}
+
+void   ft_orderbydigitsum(data_t *data)
+{
+    int i;
+    int tmp;
+
+    i = 0;
+    while (i < data->sz - 1)
+    {
+        if (data->digitsum[i] > data->digitsum[i + 1])
+        {
+            tmp = data->digitsum[i];
+            data->digitsum[i] = data->digitsum[i + 1];
+            data->digitsum[i + 1] = tmp;
+            tmp = data->weight[i];
+            data->weight[i] = data->weight[i + 1];
+            data->weight[i + 1] = tmp;
+            i = 0;
+        }
+        else
+            i++;
+    }
+}
+
+void    ft_itosarray(data_t *data, char *o)
+{
+    size_t  i;
+
+    i = 0;
+    while (data->sz >= 0)
+    {
+        data->sz--;
+        while (data->weight[data->sz] > 0)
+        {
+            o[i] = data->weight[data->sz] % 10 + '0';
+            data->weight[data->sz] /= 10;
+            i++;
+        }
+        if (data->sz > 0)
+        {
+            o[i] = ' ';
+            i++;
+        }
+    }
+}
+
+void    ft_revstr(char  *s)
+{
+    char    *p;
+    char    c;
+
+    p = s;
+    while (*p != '\0')
+        p++;
+    p--;
+    while (s < p)
+    {
+        c= *s;
+        *s = *p;
+        *p = c;
+        s++;
+        p--;
+    }
+}
+
+data_t  *ft_returnstruct(const char *s)
+{
+    data_t  *data;
+
+    data = malloc(1 * sizeof(data));
+    if (!data)
+        return(NULL);
+    data->sz = ft_listsz(s);
+    ft_stoiarray(s, data);
+    ft_digitsum(data);
+    ft_orderbydigitsum(data);
+    return (data);
+}
+
+char    *orderWeight(const char *s)
+{
+    data_t  *data;
+    char    *o;
+
+    data = malloc(1 * sizeof(data));
+    if (!data)
+        return(NULL);
+    o = calloc(strlen(s) + 1, sizeof(char));
+    if (!o)
+        return(NULL);
+    data->sz = ft_listsz(s);
+    ft_stoiarray(s, data);
+    ft_digitsum(data);
+    ft_orderbydigitsum(data);
+    ft_itosarray(data, o);
+    ft_revstr(o);
+    free(data->weight);
+    free(data->digitsum);
+    free(data);
+    return (o);
+}

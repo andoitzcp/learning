@@ -1,0 +1,79 @@
+#include <string.h>
+#include <stdlib.h>
+
+int         ft_addorsubstract(const char *roman)
+{
+    char    *rochr;
+    int     roval[7] = [1000, 500, 100, 50, 10, 5, 1];
+    int     i;
+    int     j;
+
+    rochr = strdup("MDCLXVI");
+    if (roman[1] == '\0')
+        return(roval[0]);
+    i = 0;
+    while (roman[0] != rochr[i])
+        i++;
+    j = 0;
+    while (roman[1] != rochr[j])
+        j++;
+    if (j < i)
+        return(-1 * roval[i]);
+    else
+        return(roval[i]);
+}
+
+unsigned    from_roman(const char *roman)
+{
+    unsigned int    n;
+
+    n = 0;
+    while (*roman != '\0')
+    {
+        n += ft_addorsubstract(roman);
+        roman++;
+    }
+    return (n);
+}
+
+void        ft_romanconstructor(int mod, int i, char *roman)
+{
+    char    *s1;
+    char    *s2;
+    
+    s1 = strdup("MCXI");
+    s2 = strdup("MDLV");
+    if (mod > 4 && mod < 9)
+    {
+        roman = strcat(roman, s2 + i);
+        mod -= 5;
+    }
+    if (mod < 4)
+    {
+        while (mod-- > 0)
+            roman = strcat(roman, s1 + i);
+    }
+    if (mod == 9)
+    {
+        roman = strcat(roman, s1 + i);
+        roman = strcat(roman, s1 + i - 1);
+    }
+
+}
+
+void        to_roman(unsigned number, char *roman)
+{
+    int     div;
+    int     i;
+    int     mod;
+
+    div = 1000;
+    i = 0;
+    while (div > 0)
+    {
+        mod = number % div;
+        ft_romanconstructor(mod, i, roman);
+        div /= 10;
+        i++;
+    }
+}

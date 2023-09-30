@@ -1,0 +1,78 @@
+#include <stddef.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+typedef struct  data
+{
+    char         *weight;
+    int          digitsum;
+    struct data  *next;
+} data_t;
+
+void    ft_printdata(data_t **head);
+
+int     ft_digitsum(char *s)
+{
+    int n;
+
+    n = 0;
+    while (*s != '\0')
+    {
+        n += *s - '0';
+        s++;
+    }
+    return (n);
+}
+
+void    ft_createllist(const char *s, data_t **head)
+{
+    int     i;
+    data_t  *new_node;
+
+    printf("CREATING LINKED LIST\n");
+    while (*s != '\0')
+    {
+        while (*s == ' ')
+            s++;
+        i = 0;
+        while (s[i] >= '0' && s[i] <= '9')
+            i++;
+        new_node = (data_t *)malloc(sizeof(data_t));
+        new_node->weight = strndup(s, i);
+        new_node->digitsum = ft_digitsum(new_node->weight);
+        new_node->next = *head;
+        *head = new_node;
+        printf("END:\t%s\t%d\t%p\n", new_node->weight, new_node->digitsum, new_node->next);
+        s += i;
+    }
+}
+
+void    ft_sortedinser(data_t *new_node)
+{
+    
+}
+
+void    ft_orderdata(data_t **head)
+{
+    data_t  *sorted; 
+    data_t  *current;
+
+    sorted = NULL;
+    node = *head;
+    while (!node)
+    {
+
+    }
+}
+
+char    *orderWeight(const char *s)
+{
+    data_t  **head;
+
+    *head = NULL;
+    ft_createllist(s, head);
+    ft_orderdata(head);
+    ft_printdata(head);
+}
